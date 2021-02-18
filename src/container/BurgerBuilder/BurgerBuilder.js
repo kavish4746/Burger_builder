@@ -7,7 +7,7 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Burger from "../../components/Burger/Burger";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
-import Auxi from "../../hoc/Auxi";
+import Auxi from "../../hoc/Auxi/Auxi";
 
 const INGREDIENT_PRICE = {
   salad: 10,
@@ -52,8 +52,12 @@ export default class BurgerBuilder extends Component {
     this.setState({ purchasing: true });
   };
 
-  closeModel = () => {
+  purchaseCancelHandler = () => {
     this.setState({ purchasing: false });
+  };
+
+  purchaseContinueHandler = () => {
+    alert("You can continue");
   };
   addIngredientHandler = (type) => {
     let oldCount = this.state.ingredients[type];
@@ -122,8 +126,13 @@ export default class BurgerBuilder extends Component {
           purchasable={this.state.purchasable}
           ordered={this.purchasingHandler}
         />
-        <Modal show={this.state.purchasing} close={this.closeModel}>
-          <OrderSummary ingredients={this.state.ingredients} />
+        <Modal show={this.state.purchasing} close={this.purchaseCancelHandler}>
+          <OrderSummary
+            ingredients={this.state.ingredients}
+            purchaseContinue={this.purchaseContinueHandler}
+            purchaseCancel={this.purchaseCancelHandler}
+            price={this.state.totalPrice}
+          />
         </Modal>
       </Auxi>
     );
