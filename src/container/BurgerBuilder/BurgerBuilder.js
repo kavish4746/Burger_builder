@@ -32,6 +32,7 @@ class BurgerBuilder extends Component {
   //But Our jsx will load first before this ingredients load so, we have to put spinner
   //in place where we have pass ingredients as props
   componentDidMount() {
+    console.log(this.props);
     axios
       .get(
         "https://burger-builder-4746-default-rtdb.firebaseio.com/ingredients.json"
@@ -72,31 +73,20 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true });
-    let order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "kavish",
-        address: {
-          street: "Vasna",
-          zipcode: 380007,
-          country: "India",
-        },
-        email: "kavish@gmail.com",
-      },
-      deliveryMethod: "Fastexpress",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((res) => {
-        console.log(res);
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({ loading: false, purchasing: false });
-      });
+    const qryArr = [];
+    for (let item in this.state.ingredients) {
+      qryArr.push(
+        `${encodeURIComponent(item)}=${encodeURIComponent(
+          this.state.ingredients[item]
+        )}`
+      );
+    }
+    qryArr.push(`price=${this.state.totalPrice}`);
+    let qryString = qryArr.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: `?${qryString}`,
+    });
   };
   addIngredientHandler = (type) => {
     let oldCount = this.state.ingredients[type];
